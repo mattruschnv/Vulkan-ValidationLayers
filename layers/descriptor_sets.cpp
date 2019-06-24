@@ -1298,14 +1298,9 @@ bool cvdescriptorset::ValidateSampler(const VkSampler sampler, CoreChecks *dev_d
 bool cvdescriptorset::ValidateImageUpdate(VkImageView image_view, VkImageLayout image_layout, VkDescriptorType type,
                                           CoreChecks *dev_data, const char *func_name, std::string *error_code,
                                           std::string *error_msg) {
-    *error_code = "VUID-VkWriteDescriptorSet-descriptorType-00326";
     auto iv_state = dev_data->GetImageViewState(image_view);
-    if (!iv_state) {
-        std::stringstream error_str;
-        error_str << "Invalid VkImageView: " << dev_data->report_data->FormatHandle(image_view).c_str();
-        *error_msg = error_str.str();
-        return false;
-    }
+    assert(iv_state);
+
     // Note that when an imageview is created, we validated that memory is bound so no need to re-check here
     // Validate that imageLayout is compatible with aspect_mask and image format
     //  and validate that image usage bits are correct for given usage
@@ -1314,6 +1309,7 @@ bool cvdescriptorset::ValidateImageUpdate(VkImageView image_view, VkImageLayout 
     VkFormat format = VK_FORMAT_MAX_ENUM;
     VkImageUsageFlags usage = 0;
     auto image_node = dev_data->GetImageState(image);
+    assert(image_node);
     if (image_node) {
         format = image_node->createInfo.format;
         usage = image_node->createInfo.usage;
@@ -1336,16 +1332,9 @@ bool cvdescriptorset::ValidateImageUpdate(VkImageView image_view, VkImageLayout 
             return false;
         }
     }
-    // First validate that format and layout are compatible
-    if (format == VK_FORMAT_MAX_ENUM) {
-        std::stringstream error_str;
-        error_str << "Invalid image (" << dev_data->report_data->FormatHandle(image).c_str() << ") in imageView ("
-                  << dev_data->report_data->FormatHandle(image_view).c_str() << ").";
-        *error_msg = error_str.str();
-        return false;
-    }
     // TODO : The various image aspect and format checks here are based on general spec language in 11.5 Image Views section under
     // vkCreateImageView(). What's the best way to create unique id for these cases?
+    *error_code = "UNASSIGNED-CoreValidation-DrawState-InvalidImageView";
     bool ds = FormatIsDepthOrStencil(format);
     switch (image_layout) {
         case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
