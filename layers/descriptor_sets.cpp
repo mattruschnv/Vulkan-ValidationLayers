@@ -1475,9 +1475,9 @@ bool cvdescriptorset::ValidateImageUpdate(VkImageView image_view, VkImageLayout 
     }
     if (error_usage_bit) {
         std::stringstream error_str;
-        error_str << "ImageView (" << dev_data->report_data->FormatHandle(image_view).c_str() << ") with usage mask 0x" << usage
-                  << " being used for a descriptor update of type " << string_VkDescriptorType(type) << " does not have "
-                  << error_usage_bit << " set.";
+        error_str << "ImageView (" << dev_data->report_data->FormatHandle(image_view).c_str() << ") with usage mask " << std::hex
+                  << std::showbase << usage << " being used for a descriptor update of type " << string_VkDescriptorType(type)
+                  << " does not have " << error_usage_bit << " set.";
         *error_msg = error_str.str();
         return false;
     }
@@ -1926,7 +1926,7 @@ bool cvdescriptorset::ValidateBufferUsage(BUFFER_STATE const *buffer_node, VkDes
     }
     if (error_usage_bit) {
         std::stringstream error_str;
-        error_str << "Buffer (" << buffer_node->buffer << ") with usage mask 0x" << usage
+        error_str << "Buffer (" << buffer_node->buffer << ") with usage mask " << std::hex << std::showbase << usage
                   << " being used for a descriptor update of type " << string_VkDescriptorType(type) << " does not have "
                   << error_usage_bit << " set.";
         *error_msg = error_str.str();
