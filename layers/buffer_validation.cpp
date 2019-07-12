@@ -3374,7 +3374,7 @@ bool CoreChecks::ValidateCmdBufImageLayouts(
             isr_pair.subresource = (*it_init).subresource;
             VkImageLayout initial_layout = (*it_init).layout;
             VkImageLayout image_layout;
-            if (FindLayout(overlayLayoutMap, isr_pair, image_layout) || FindLayout(globalImageLayoutMap, isr_pair, image_layout)) {
+            if (FindLayout(globalImageLayoutMap, isr_pair, image_layout) || FindLayout(overlayLayoutMap, isr_pair, image_layout)) {
                 if (initial_layout == VK_IMAGE_LAYOUT_UNDEFINED) {
                     // TODO: Set memory invalid which is in mem_tracker currently
                 } else if (image_layout != initial_layout) {
